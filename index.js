@@ -91,9 +91,9 @@ export default {
 			const host = request.headers.get('Host');
 			const requestedPath = url.pathname.substring(1); // Remove leading slash
 			const matchingUserID = userIDs.length === 1 ?
-				(requestedPath === userIDs[0] || 
-				 requestedPath === `sub/${userIDs[0]}` || 
-				 requestedPath === `bestip/${userIDs[0]}` ? userIDs[0] : null) :
+				(requestedPath === userIDs[0] ||
+					requestedPath === `sub/${userIDs[0]}` ||
+					requestedPath === `bestip/${userIDs[0]}` ? userIDs[0] : null) :
 				userIDs.find(id => {
 					const patterns = [id, `sub/${id}`, `bestip/${id}`];
 					return patterns.some(pattern => requestedPath.startsWith(pattern));
@@ -1237,9 +1237,9 @@ function getConfig(userIDs, hostName, proxyIP) {
         <h3>Best IP Configuration</h3>
         <div class="input-group mb-3">
           <select class="form-select" id="proxySelect" onchange="updateProxyConfig()">
-            ${typeof proxyIP === 'string' ? 
-              `<option value="${proxyIP}">${proxyIP}</option>` : 
-              Array.from(proxyIP).map(proxy => `<option value="${proxy}">${proxy}</option>`).join('')}
+            ${typeof proxyIP === 'string' ?
+				`<option value="${proxyIP}">${proxyIP}</option>` :
+				Array.from(proxyIP).map(proxy => `<option value="${proxy}">${proxy}</option>`).join('')}
           </select>
         </div>
 		<br>
@@ -1300,16 +1300,32 @@ function GenSub(userID_path, hostname, proxyIP) {
 	const mainDomains = new Set([
 		hostname,
 		// public domains
-		'icook.hk',
-		'japan.com',
+		'time.is',
+		'ip.sb',
 		'malaysia.com',
 		'russia.com',
 		'singapore.com',
+		'skk.moe',
 		'www.visa.com',
+		'www.visa.com.hk',
+		'www.visa.com.tw',
+		'www.visa.co.jp',
+		'www.visakorea.com',
+		'www.gco.gov.qa',
+		'www.gov.se',
+		'www.gov.ua',
+		'www.digitalocean.com',
 		'www.csgo.com',
-		'www.shopify.com',
+		'www.whoer.net',
 		'www.whatismyip.com',
 		'www.ipget.net',
+		'www.hugedomains.com',
+		'www.udacity.com',
+		'www.4chan.org',
+		'www.okcupid.com',
+		'www.glassdoor.com',
+		'www.udemy.com',
+		'www.baipiao.eu.org',
 		// 高频率更新
 		// 'speed.marisalnc.com',           // 1000ip/3min
 		'freeyx.cloudflare88.eu.org',    // 1000ip/3min
@@ -1330,7 +1346,7 @@ function GenSub(userID_path, hostname, proxyIP) {
 		'cf.zerone-cdn.pp.ua',           // 未知频率
 		'cfip.1323123.xyz',              // 未知频率
 		'cdn.tzpro.xyz',                 // 未知频率
-		'cf.877771.xyz',                 // 未知频率
+		// 'cf.877771.xyz',                 // 未知频率 -1
 		'cnamefuckxxs.yuchen.icu',       // 未知频率
 		'cfip.xxxxxxxx.tk',              // OTC大佬提供维护
 	]);
@@ -1346,22 +1362,37 @@ function GenSub(userID_path, hostname, proxyIP) {
 		// Generate main HTTP URLs first for all domains
 		if (!hostname.includes('pages.dev')) {
 			mainDomains.forEach(domain => {
-				Array.from(HttpPort).forEach((port) => {
-					const urlPart = `${hostname.split('.')[0]}-${domain}-HTTP-${port}`;
-					const mainProtocolHttp = atob(pt) + '://' + userID + atob(at) + domain + ':' + port + commonUrlPartHttp + urlPart;
-					allUrls.push(mainProtocolHttp);
-				});
+				// 随机选择一个端口
+				const port = Array.from(HttpPort)[Math.floor(Math.random() * HttpPort.size)];
+				const urlPart = `${hostname.split('.')[0]}-${domain}-HTTP-${port}`;
+				const mainProtocolHttp = atob(pt) + '://' + userID + atob(at) + domain + ':' + port + commonUrlPartHttp + urlPart;
+				allUrls.push(mainProtocolHttp);
+				// Array.from(HttpPort).forEach((port) => {
+				// 	const urlPart = `${hostname.split('.')[0]}-${domain}-HTTP-${port}`;
+				// 	const mainProtocolHttp = atob(pt) + '://' + userID + atob(at) + domain + ':' + port + commonUrlPartHttp + urlPart;
+				// 	allUrls.push(mainProtocolHttp);
+				// });
 			});
 		}
 
 		// Generate main HTTPS URLs for all domains
+		// mainDomains.forEach(domain => {
+		// 	Array.from(HttpsPort).forEach((port) => {
+		// 		const urlPart = `${hostname.split('.')[0]}-${domain}-HTTPS-${port}`;
+		// 		const mainProtocolHttps = atob(pt) + '://' + userID + atob(at) + domain + ':' + port + commonUrlPartHttps + urlPart;
+		// 		allUrls.push(mainProtocolHttps);
+		// 	});
+		// });
+
+		// 遍历所有的主域名
 		mainDomains.forEach(domain => {
-			Array.from(HttpsPort).forEach((port) => {
-				const urlPart = `${hostname.split('.')[0]}-${domain}-HTTPS-${port}`;
-				const mainProtocolHttps = atob(pt) + '://' + userID + atob(at) + domain + ':' + port + commonUrlPartHttps + urlPart;
-				allUrls.push(mainProtocolHttps);
-			});
+			// 随机选择一个端口
+			const port = Array.from(HttpsPort)[Math.floor(Math.random() * HttpsPort.size)];
+			const urlPart = `${hostname.split('.')[0]}-${domain}-HTTPS-${port}`;
+			const mainProtocolHttps = atob(pt) + '://' + userID + atob(at) + domain + ':' + port + commonUrlPartHttps + urlPart;
+			allUrls.push(mainProtocolHttps);
 		});
+
 
 		// Generate proxy HTTPS URLs
 		proxyIPArray.forEach((proxyAddr) => {
